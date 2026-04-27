@@ -1,16 +1,32 @@
-import os
-import json
-import subprocess
-import sys
-from datetime import datetime
-from typing import Any
-from openai import OpenAI
+# =============================================================================
+# Part 1: 环境配置与依赖导入
+# =============================================================================
+
+import os               # 环境变量读取、文件路径操作
+import json             # JSON 数据解析（工具参数、API 响应）
+import subprocess       # 执行 Shell 命令（核心工具实现）
+import sys              # 命令行参数处理
+from datetime import datetime  # 时间戳生成（记忆记录）
+from typing import Any  # 类型注解支持
+from openai import OpenAI  # OpenAI API 客户端（支持任何兼容 API）
+
+# =============================================================================
+# Part 2: OpenAI 客户端初始化
+# =============================================================================
+# 创建 OpenAI 客户端实例
+# - api_key: 从环境变量读取，支持 OpenAI 或第三方兼容服务
+# - base_url: 可选，支持自定义 API 端点（如 OpenRouter、本地代理等）
 
 client = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY"),
     base_url=os.environ.get("OPENAI_BASE_URL")
 )
 
+# =============================================================================
+# Part 3: 配置常量
+# =============================================================================
+# MEMORY_FILE: 记忆文件路径，存储历史任务和结果（Markdown 格式）
+# 用于保持上下文连续性，支持Agent"记住"之前的任务
 MEMORY_FILE = "agent_memory.md"
 
 tools = [
@@ -86,8 +102,8 @@ available_functions = {
     "read_file": read_file,
     "write_file": write_file
 }
-
-def parse_tool_arguments(raw_arguments: str) -> dict[str, Any]:
+#解析工具调用参数，确保即使输入无效也能返回错误信息而不是崩溃
+def parse_tool_arguments(raw_arguments: str) -> dict[str, Any]: 
     if not raw_arguments:
         return {}
     try:
@@ -95,7 +111,7 @@ def parse_tool_arguments(raw_arguments: str) -> dict[str, Any]:
         return parsed if isinstance(parsed, dict) else {}
     except json.JSONDecodeError as error:
         return {"_argument_error": f"Invalid JSON arguments: {error}"}
-
+# 读取记忆文件的最后50行作为上下文，避免过长导致模型输入限制问题，同时保留最近的交互历史
 def load_memory():
     if not os.path.exists(MEMORY_FILE):
         return ""
@@ -115,7 +131,7 @@ def save_memory(task, result):
             f.write(entry)
     except:
         pass
-
+# 创建计划函数，使用模型将复杂任务分解为简单步骤，返回步骤列表供后续执行
 def create_plan(task):
     print("[Planning] Breaking down task...")
     response = client.chat.completions.create(
@@ -128,9 +144,10 @@ def create_plan(task):
     )
     try:
         plan_data = json.loads(response.choices[0].message.content)
-        if isinstance(plan_data, dict):
+        if isinstance(plan_data, dict): 
+            #支持两种格式：{"steps": [...]} 或直接是步骤列表 [...]
             steps = plan_data.get("steps", [task])
-        elif isinstance(plan_data, list):
+        elif isinstance(plan_data, list):#如果直接返回列表格式，也能正确解析
             steps = plan_data
         else:
             steps = [task]
@@ -140,7 +157,8 @@ def create_plan(task):
         return steps
     except:
         return [task]
-
+# 运行代理步骤函数，处理单个任务或步骤的执行逻辑，
+# 包括与模型的交互、工具调用和结果处理，支持多轮迭代直到完成或达到最大迭代次数
 def run_agent_step(task, messages, max_iterations=5):
     messages.append({"role": "user", "content": task})
     actions = []
@@ -154,8 +172,12 @@ def run_agent_step(task, messages, max_iterations=5):
         messages.append(message)
         if not message.tool_calls:
             return message.content, actions, messages
+        #处理工具调用，解析函数名称和参数，执行对应函数并将结果反馈给模型，
+        # 支持错误处理以防止崩溃
         for tool_call in message.tool_calls:
+            #工具调用可能没有函数信息，添加安全检查避免AttributeError
             function_payload = getattr(tool_call, "function", None)
+            
             if function_payload is None:
                 continue
             function_name = str(getattr(function_payload, "name", ""))
