@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nanoAgent 项目概览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+        
+        header h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #a8d8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .quote {
+            font-style: italic;
+            margin-top: 20px;
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1em;
+        }
+        
+        .content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            color: #2a5298;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #2a5298;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section h2::before {
+            content: '';
+            width: 8px;
+            height: 30px;
+            background: #2a5298;
+            border-radius: 4px;
+        }
+        
+        .section h3 {
+            color: #444;
+            font-size: 1.3em;
+            margin: 25px 0 15px 0;
+        }
+        
+        .intro-text {
+            font-size: 1.1em;
+            color: #555;
+            line-height: 1.8;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .feature-card h4 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .feature-card p {
+            opacity: 0.95;
+            font-size: 0.95em;
+        }
+        
+        .feature-card ul {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        
+        .feature-card li {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        
+        .architecture-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+        
+        .module-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .module-item {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 15px 20px;
+            border-radius: 0 10px 10px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .module-item h5 {
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        
+        .module-item p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .module-item code {
+            display: block;
+            background: #f4f4f4;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 8px;
+            font-size: 0.85em;
+            color: #333;
+        }
+        
+        .workflow {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .workflow h3 {
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .workflow-steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 15px;
+        }
+        
+        .step {
+            background: rgba(255,255,255,0.15);
+            padding: 15px 25px;
+            border-radius: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .step-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .label {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+        
+        .code-example {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 25px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        .code-example code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        
+        .code-example .comment { color: #5c6370; font-style: italic; }
+        .code-example .keyword { color: #c678dd; }
+        .code-example .string { color: #98c379; }
+        .code-example .function { color: #61afef; }
+        .code-example .number { color: #d19a66; }
+        
+        .tools-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .tools-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .tools-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tools-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255,255,255,0.8);
+            margin-top: 40px;
+        }
+        
+        footer a {
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        footer a:hover {
+            border-bottom-color: white;
+        }
+        
+        .highlight { background: linear-gradient(120deg, #ffeaa7 0%, #ffeaa7 100%); background-repeat: no-repeat; background-size: 100% 40%; background-position: 0 88%; padding: 0 4px; }
+        
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.5em; }
+            .features-grid { grid-template-columns: 1fr; }
+            .module-list { grid-template-columns: 1fr; }
+            .workflow-steps { flex-direction: column; }
+            .content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 nanoAgent</h1>
+            <p>最小化的 AI 智能体系统，用 OpenAI 函数调用实现与系统交互</p>
+            <div class="quote">"问题不在于你看到了什么，而在于你看见了什么。" — 梭罗</div>
+        </header>
+        
+        <div class="content">
+            <!-- 项目简介 -->
+            <section class="section">
+                <h2>项目简介</h2>
+                <p class="intro-text">
+                    nanoAgent 是一个<span class="highlight">基于 OpenAI 函数调用</span>的最小化 AI 智能体实现。它可以让 AI 执行 bash 命令、读写文件、管理待办事项等操作，实现与系统的智能交互。
+                    项目设计简洁，核心逻辑约 390 行代码，采用模块化架构，易于理解和扩展。
+                </p>
+            </section>
+            
+            <!-- 核心统计数据 -->
+            <section class="section">
+                <h2>📊 项目统计</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="number">169</div>
+                        <div class="label">文件总数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">12</div>
+                        <div class="label">核心模块</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">15+</div>
+                        <div class="label">可用工具</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">Python</div>
+                        <div class="label">开发语言</div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 核心特性 -->
+            <section class="section">
+                <h2>✨ 核心特性</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h4>🔧 系统交互</h4>
+                        <p>执行 bash 命令、文件操作（读/写/编辑/搜索）</p>
+                        <ul>
+                            <li>read - 读取文件</li>
+                            <li>write - 写入文件</li>
+                            <li>edit - 编辑文件</li>
+                            <li>bash - 执行命令</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📋 任务规划</h4>
+                        <p>自动拆解复杂任务为可执行步骤</p>
+                        <ul>
+                            <li>plan - 任务规划</li>
+                            <li>todo_create - 创建任务</li>
+                            <li>todo_update - 更新任务</li>
+                            <li>todo_list - 查看任务</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🧠 智能记忆</h4>
+                        <p>会话持久化和向量存储支持</p>
+                        <ul>
+                            <li>会话存储</li>
+                            <li>历史记录管理</li>
+                            <li>向量存储</li>
+                            <li>上下文压缩</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>👥 团队协作</h4>
+                        <p>多角色协作和 MCP 支持</p>
+                        <ul>
+                            <li>团队管理</li>
+                            <li>MCP 客户端</li>
+                            <li>技能加载器</li>
+                            <li>规则系统</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>⚡ 执行优化</h4>
+                        <p>异步执行和故障恢复机制</p>
+                        <ul>
+                            <li>异步执行器</li>
+                            <li>熔断器保护</li>
+                            <li>重试机制</li>
+                            <li>性能分析</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🖥️ 交互界面</h4>
+                        <p>REPL 和 Web UI 双模式</p>
+                        <ul>
+                            <li>命令行交互 (REPL)</li>
+                            <li>Web 界面</li>
+                            <li>自动补全</li>
+                            <li>流式响应</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 系统架构 -->
+            <section class="section">
+                <h2>🏗️ 系统架构</h2>
+                <div class="architecture-section">
+                    <div class="module-list">
+                        <div class="module-item">
+                            <h5>🎯 Core 核心层</h5>
+                            <p>Agent 主逻辑，执行流程管理</p>
+                            <code>agent/core/</code>
+                        </div>
+                        <div class="module-item">
+                            <h5>🛠️ Tools 工具层</h5>
+                            <p>系统交互工具集合</p>
+                            <code>agent/tools/</code>
+                        </div>
+                        <div class="module-item">
+                            <h5>💾 Memory 记忆层</h5>
+                            <p>会话和向量存储管理</p>
+                            <code>agent/memory/</code>
+                        </div>
+                        <div class="module-item">
+                            <h5>📝 Context 上下文</h5>
+                            <p>上下文管理和 token 计算</p>
+                            <code>agent/context/</code>
+                        </div>
+                        <div class="module-item">
+                            <h5>⚡ Execution 执行</h5>
+                            <p>异步执行和重试机制</p>
+                            <code>agent/execution/</code>
+                        </div>
+                        <div class="module-item">
+                            <h5>🔌 MCP 连接</h5>
+                            <p>MCP 客户端和服务器</p>
+                            <code>agent/mcp/</code>
+                        </div>
+                        <div class="module-item">
+                            <h5>🖥️ UI 界面</h5>
+                            <p>REPL 和 Web 应用</p>
+                            <code>agent/ui/</code>
+                        </div>
+                        <div class="module-item">
+                            <h5>📦 Loaders 加载</h5>
+                            <p>规则、技能和 MCP 加载</p>
+                            <code>agent/loaders/</code>
+                        </div>
+                        <div class="module-item">
+                            <h5>👥 Teams 团队</h5>
+                            <p>多角色协作管理</p>
+                            <code>agent/teams/</code>
+                        </div>
+                        <div class="module-item">
+                            <h5>📊 VCS 版本控制</h5>
+                            <p>变更追踪管理</p>
+                            <code>agent/vcs/</code>
+                        </div>
+                        <div class="module-item">
+                            <h5>🔧 Utils 工具</h5>
+                            <p>日志和性能分析</p>
+                            <code>agent/utils/</code>
+                        </div>
+                        <div class="module-item">
+                            <h5>🧪 Tests 测试</h5>
+                            <p>测试用例和示例</p>
+                            <code>tests/</code>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 工作流程 -->
+            <section class="section">
+                <h2>🔄 工作流程</h2>
+                <div class="workflow">
+                    <h3>核心执行循环</h3>
+                    <div class="workflow-steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div>接收任务</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div>加载上下文</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div>调用模型</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <div>执行工具</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">5</div>
+                            <div>返回结果</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 可用工具 -->
+            <section class="section">
+                <h2>🛠️ 可用工具列表</h2>
+                <table class="tools-table">
+                    <thead>
+                        <tr>
+                            <th>工具名称</th>
+                            <th>功能描述</th>
+                            <th>所在模块</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>read</code></td>
+                            <td>读取文件内容（支持行号和偏移）</td>
+                            <td>filesystem</td>
+                        </tr>
+                        <tr>
+                            <td><code>write</code></td>
+                            <td>写入内容到文件</td>
+                            <td>filesystem</td>
+                        </tr>
+                        <tr>
+                            <td><code>edit</code></td>
+                            <td>编辑文件内容（字符串替换）</td>
+                            <td>filesystem</td>
+                        </tr>
+                        <tr>
+                            <td><code>glob</code></td>
+                            <td>按模式查找文件（支持递归通配）</td>
+                            <td>filesystem</td>
+                        </tr>
+                        <tr>
+                            <td><code>grep</code></td>
+                            <td>递归搜索文件内容</td>
+                            <td>search</td>
+                        </tr>
+                        <tr>
+                            <td><code>bash</code></td>
+                            <td>执行 Shell 命令</td>
+                            <td>command</td>
+                        </tr>
+                        <tr>
+                            <td><code>plan</code></td>
+                            <td>任务拆解和执行计划</td>
+                            <td>planning</td>
+                        </tr>
+                        <tr>
+                            <td><code>todo_create</code></td>
+                            <td>创建新任务</td>
+                            <td>todo</td>
+                        </tr>
+                        <tr>
+                            <td><code>todo_update</code></td>
+                            <td>更新任务状态</td>
+                            <td>todo</td>
+                        </tr>
+                        <tr>
+                            <td><code>todo_list</code></td>
+                            <td>列出所有任务</td>
+                            <td>todo</td>
+                        </tr>
+                        <tr>
+                            <td><code>multi_edit</code></td>
+                            <td>批量编辑多个文件</td>
+                            <td>multi_edit</td>
+                        </tr>
+                        <tr>
+                            <td><code>ask_user</code></td>
+                            <td>向用户提问获取信息</td>
+                            <td>interaction</td>
+                        </tr>
+                        <tr>
+                            <td><code>confirm</code></td>
+                            <td>请求用户确认操作</td>
+                            <td>interaction</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            
+            <!-- 核心代码示例 -->
+            <section class="section">
+                <h2>💻 核心代码示例</h2>
+                <div class="code-example">
+<code><span class="comment"># 定义工具</span>
+tools = [{<span class="string">"type"</span>: <span class="string">"function"</span>, <span class="string">"function"</span>: {...}}]
+
+<span class="comment"># Agent 执行循环</span>
+<span class="keyword">for</span> _ <span class="keyword">in</span> <span class="function">range</span>(max_iterations):
+    response = client.chat.completions.create(
+        model=model, 
+        messages=messages, 
+        tools=tools
+    )
+    message = response.choices[<span class="number">0</span>].message
+    
+    <span class="keyword">if not</span> message.tool_calls:
+        <span class="keyword">return</span> message.content
+    
+    <span class="comment"># 执行工具调用</span>
+    <span class="keyword">for</span> tool_call <span class="keyword">in</span> message.tool_calls:
+        func_name = tool_call.function.name
+        result = available_functions[func_name](**args)
+        messages.append({<span class="string">"role"</span>: <span class="string">"tool"</span>, <span class="string">"content"</span>: result})</code>
+                </div>
+            </section>
+            
+            <!-- 快速开始 -->
+            <section class="section">
+                <h2>🚀 快速开始</h2>
+                <div class="code-example">
+<code><span class="comment"># 安装依赖</span>
+pip install -r requirements.txt
+
+<span class="comment"># 设置环境变量</span>
+<span class="keyword">export</span> OPENAI_API_KEY=<span class="string">'your-key-here'</span>
+
+<span class="comment"># 启动 Agent</span>
+python agent.py <span class="string">"列出当前目录下所有 python 文件"</span>
+python agent.py <span class="string">"创建一个打印 hello world 的 python 脚本"</span></code>
+                </div>
+            </section>
+        </div>
+        
+        <footer>
+            <p>⏺ 如同一粒种子长成森林，一个文件化作无限可能。</p>
+            <p>MIT License | Open Source Project</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "nanoAgent Interactive",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "agent.main",
+            "cwd": "${workspaceFolder}/agent",
+            "args": ["-i"],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": true
+        },
+        {
+            "name": "nanoAgent CLI",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "agent.cli",
+            "cwd": "${workspaceFolder}/agent",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": true
+        }
+    ]
+}

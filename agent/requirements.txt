@@ -1,0 +1,24 @@
+# Core
+colorama>=0.4.6
+openai>=1.0.0
+python-dotenv>=1.0.0
+
+# Context & Memory
+tiktoken>=0.5.0
+numpy>=1.26.0
+sentence-transformers>=2.3.0  # optional, for semantic similarity
+
+# Async & File
+aiofiles>=23.0.0
+
+# UI
+rich>=13.0.0
+prompt-toolkit>=3.0.0
+textual>=0.47.0
+
+# Configuration
+pyyaml>=6.0.0
+
+# Performance Profiling (optional)
+# line_profiler>=4.0.0
+# memory_profiler>=0.60.0

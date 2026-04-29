@@ -6,8 +6,10 @@ import glob as glob_module
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+from dotenv import load_dotenv
 from openai import OpenAI
 
+load_dotenv()
 client = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY"),
     base_url=os.environ.get("OPENAI_BASE_URL")
@@ -276,7 +278,3 @@ if __name__ == "__main__":
         sys.exit(1)
     task = " ".join(sys.argv[1:])
     run_agent_claudecode(task, use_plan=use_plan)
-
-
-
-
